@@ -1,6 +1,6 @@
 ﻿Function Get-RockYouPasswords {
     param (
-        [string]$FilePath = "rockyou.txt"
+        [string]$FilePath = "rockyou-75.txt"
     )
 
     if (Test-Path $FilePath) {

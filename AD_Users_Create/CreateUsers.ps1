@@ -89,10 +89,10 @@ Function CreateUser {
         
         
     }else{
-        $surname = get-content("$($scriptpath)\Names\familynames-usa-top1000.txt")|get-random
+        $surname = get-content("$($scriptpath)\..\AD_Users_Create\Names\familynames-usa-top1000.txt")|get-random
         # Write-Host $surname
     $genderpreference = 0,1|get-random
-    if ($genderpreference -eq 0){$givenname = get-content("$($scriptpath)\Names\femalenames-usa-top1000.txt")|get-random}else{$givenname = get-content($scriptpath + '\Names\malenames-usa-top1000.txt')|get-random}
+    if ($genderpreference -eq 0){$givenname = get-content("$($scriptpath)\..\AD_Users_Create\Names\femalenames-usa-top1000.txt")|get-random}else{$givenname = get-content($scriptpath + '\..\AD_Users_Create\Names\malenames-usa-top1000.txt')|get-random}
     $name = $givenname+"_"+$surname
     }
     

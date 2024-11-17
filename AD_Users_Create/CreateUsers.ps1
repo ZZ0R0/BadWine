@@ -59,9 +59,6 @@ Function CreateUser {
         return
     }
 
-    # Example of creating a user with a password from rockyou.txt
-    $randomPassword = $passwords | Get-Random
-
     # Your existing code to create a user, using $randomPassword for the password
     # For example:
     # New-ADUser -Name "John Doe" -AccountPassword (ConvertTo-SecureString $randomPassword -AsPlainText -Force) -OtherParameters ...
@@ -104,13 +101,13 @@ Function CreateUser {
         
     #Need to figure out how to do the L attribute
     $description = 'Created with secframe.com/badblood.'
-    $pwd = New-SWRandomPassword -MinPasswordLength 22 -MaxPasswordLength 25
+    $pwd = $passwords | Get-Random
     #======================================================================
     # 
     
     $passwordinDesc = 1..1000|get-random
         
-        $pwd = New-SWRandomPassword -MinPasswordLength 22 -MaxPasswordLength 25
+        $pwd = $passwords | Get-Random
             if ($passwordinDesc -lt 10) { 
                 $description = 'Just so I dont forget my password is ' + $pwd 
             }else{}

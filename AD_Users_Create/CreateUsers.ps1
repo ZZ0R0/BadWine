@@ -1,23 +1,4 @@
-﻿Function Get-RockYouPasswords {
-    param (
-        [string]$FilePath = "rockyou-AD.txt"
-    )
-
-    if (Test-Path $FilePath) {
-        $passwords = Get-Content -Path $FilePath
-        return $passwords
-    } else {
-        Write-Error "Password file not found: $FilePath"
-        return @()
-    }
-}
-
-Function CreateUser {
-    param (
-        [string]$Domain,
-        [array]$OUList,
-        [string]$ScriptDir
-    )
+﻿Function CreateUser {
 
     <#
         .SYNOPSIS
@@ -52,7 +33,79 @@ Function CreateUser {
     
         
     #>
+    [CmdletBinding()]
+    
+    param
+    (
+        [Parameter(Mandatory = $false,
+            Position = 1,
+            HelpMessage = 'Supply a result from get-addomain')]
+            [Object[]]$Domain,
+        [Parameter(Mandatory = $false,
+            Position = 2,
+            HelpMessage = 'Supply a result from get-adorganizationalunit -filter *')]
+            [Object[]]$OUList,
+        [Parameter(Mandatory = $false,
+            Position = 3,
+            HelpMessage = 'Supply the script directory for where this script is stored')]
+        [string]$ScriptDir
+    )
+    
+        if(!$PSBoundParameters.ContainsKey('Domain')){
+            if($args[0]){
+                $setDC = $args[0].pdcemulator
+                $dnsroot = $args[0].dnsroot
+            }
+            else{
+                $setDC = (Get-ADDomain).pdcemulator
+                $dnsroot = (get-addomain).dnsroot
+            }
+        }
+            else {
+                $setDC = $Domain.pdcemulator
+                $dnsroot = $Domain.dnsroot
+            }
+        if (!$PSBoundParameters.ContainsKey('OUList')){
+            if($args[1]){
+                $OUsAll = $args[1]
+            }
+            else{
+                $OUsAll = get-adobject -Filter {objectclass -eq 'organizationalunit'} -ResultSetSize 300
+            }
+        }else {
+            $OUsAll = $OUList
+        }
+        if (!$PSBoundParameters.ContainsKey('ScriptDir')){
+            
+            if($args[2]){
 
+                # write-host "line 70"
+                $scriptPath = $args[2]}
+            else{
+                    # write-host "did i get here"
+                    $scriptPath = "$((Get-Location).path)\AD_Users_Create\"
+            }
+            
+        }else{
+            $scriptpath = $ScriptDir
+        }
+
+
+        Function Get-RockYouPasswords {
+            param (
+                [string]$FilePath = "rockyou-AD.txt"
+            )
+        
+            if (Test-Path $FilePath) {
+                $passwords = Get-Content -Path $FilePath
+                return $passwords
+            } else {
+                Write-Error "Password file not found: $FilePath"
+                return @()
+            }
+        }
+
+    # Get the rockyou passwords
     $passwords = Get-RockYouPasswords
     if ($passwords.Count -eq 0) {
         Write-Error "No passwords available from rockyou.txt"
